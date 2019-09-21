@@ -61,8 +61,8 @@ namespace Server
                     Random random = new Random();
                     int gridOutput = random.Next(0, 100);
                     byte[] message = Encoding.ASCII.GetBytes(gridOutput.ToString());
-                    clientSocket.Send(message);
 
+                    clientSocket.Send(message);
                     //Experiment without this feature, or with this feature on command from the client
                     clientSocket.Shutdown(SocketShutdown.Both);
                     clientSocket.Close();

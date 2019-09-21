@@ -48,10 +48,11 @@ public class LightGrid : MonoBehaviour
     public void RequestNumber()
     {
         Debug.Log("Requesting number from server");
-        ActivateClient();
+        ActivateClient(false);
     }
 
-    public void ActivateClient()
+
+    public void ActivateClient(bool isShutDown)
     {
         try
         {
@@ -68,15 +69,21 @@ public class LightGrid : MonoBehaviour
                 sender.Connect(localEndPoint);
                 Debug.Log("Socket Connected to " +sender.RemoteEndPoint.ToString());
 
-                byte[] messageSent = Encoding.ASCII.GetBytes("Test Client <EOF>");
+                byte[] messageSent = Encoding.ASCII.GetBytes("Server please give me a random number? <EOF>");
+
                 int byteSent = sender.Send(messageSent);
 
                 byte[] messageReceived = new byte[1024];
                 int byteRecv = sender.Receive(messageReceived);
                 Debug.Log("Message from Server -> " + Encoding.ASCII.GetString(messageReceived, 0, byteRecv));
 
+                int index = Convert.ToInt32(Encoding.ASCII.GetString(messageReceived, 0, byteRecv));
+                SetCubeColors(index);
+
                 sender.Shutdown(SocketShutdown.Both);
                 sender.Close();
+               
+                
             }
             catch (ArgumentNullException ane)
             {
@@ -95,5 +102,6 @@ public class LightGrid : MonoBehaviour
         {
             Debug.Log(e.ToString());
         }
+        isShutDown = false;
     }
 }
